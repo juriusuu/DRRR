@@ -2642,6 +2642,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   livesText: {fileID: 597473236}
+  sandBagManager: {fileID: 0}
 --- !u!222 &597473238
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4708,7 +4709,11 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 8b9a677f24793ba45bdc27a1dab7745e, type: 2}
     - target: {fileID: 4479927946951248314, guid: 8c2d3588d63061d41b5142b95e5bc969, type: 3}
       propertyPath: m_Mass
-      value: 95
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 4479927946951248314, guid: 8c2d3588d63061d41b5142b95e5bc969, type: 3}
+      propertyPath: m_AngularDrag
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 4479927946951248314, guid: 8c2d3588d63061d41b5142b95e5bc969, type: 3}
       propertyPath: m_Constraints
@@ -10275,13 +10280,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_moveSpeed: 2
   m_turnSpeed: 200
-  m_jumpForce: 1
+  m_jumpForce: 0
   m_animator: {fileID: 1180196716}
   m_rigidBody: {fileID: 1180196714}
   m_controlMode: 0
   pickupButton: {fileID: 8427559551896777475}
-  lifeManager: {fileID: 0}
-  timerManager: {fileID: 0}
+  lifeManager: {fileID: 597473237}
+  timerManager: {fileID: 2026376013}
 --- !u!1001 &1199017615
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12792,6 +12797,7 @@ MonoBehaviour:
   maxLives: 3
   currentLives: 0
   livesText: {fileID: 597473236}
+  currentGameState: 0
 --- !u!4 &1813804545
 Transform:
   m_ObjectHideFlags: 0

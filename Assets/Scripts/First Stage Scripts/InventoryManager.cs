@@ -51,6 +51,15 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
+
+    // Method to get the count of a specific type of sandbag
+    public int GetSandbagCount(string type)
+    {
+        int count = sandbagInventory.ContainsKey(type) ? sandbagInventory[type] : 0;
+        Debug.Log($"Current count for {type} sandbags: {count}");
+        return count;
+    }
+
     private void DropSandbag(Vector3 position, string type)
     {
         // Instantiate the sandbag at the desired position
@@ -68,13 +77,6 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    // Method to get the count of a specific type of sandbag
-    public int GetSandbagCount(string type)
-    {
-        int count = sandbagInventory.ContainsKey(type) ? sandbagInventory[type] : 0;
-        Debug.Log($"Current count for {type} sandbags: {count}");
-        return count;
-    }
 }
 
 /*

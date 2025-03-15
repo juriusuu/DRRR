@@ -68,6 +68,21 @@ public class SandBagManager : MonoBehaviour
             Debug.Log($"No {type} sandbags available to drop or not in drop area.");
         }
     }
+
+    private bool IsWithinArea(Vector3 position)
+    {
+        // Check if the position is within the defined area
+        bool isWithinX = position.x >= areaCenter.x - areaSize.x / 2 && position.x <= areaCenter.x + areaSize.x / 2;
+        bool isWithinZ = position.z >= areaCenter.z - areaSize.z / 2 && position.z <= areaCenter.z + areaSize.z / 2;
+
+        // Optional: Check if the Y position is within a certain range if needed
+        bool isWithinY = position.y >= areaCenter.y - areaSize.y / 2 && position.y <= areaCenter.y + areaSize.y / 2;
+
+        Debug.Log($"Checking position: {position}, IsWithinX: {isWithinX}, IsWithinZ: {isWithinZ}, IsWithinY: {isWithinY}");
+
+        return isWithinX && isWithinZ; // Return true if within X and Z bounds
+                                       // If you want to include Y, return isWithinX && isWithinZ && isWithinY;
+    }
     private System.Collections.IEnumerator SpawnRainmakerWithDelay(Vector3 position)
     {
         yield return new WaitForSeconds(1f); // Wait for 1 second
@@ -110,20 +125,7 @@ public class SandBagManager : MonoBehaviour
             Debug.Log("Cloud destroyed.");
         }
     }
-    private bool IsWithinArea(Vector3 position)
-    {
-        // Check if the position is within the defined area
-        bool isWithinX = position.x >= areaCenter.x - areaSize.x / 2 && position.x <= areaCenter.x + areaSize.x / 2;
-        bool isWithinZ = position.z >= areaCenter.z - areaSize.z / 2 && position.z <= areaCenter.z + areaSize.z / 2;
 
-        // Optional: Check if the Y position is within a certain range if needed
-        bool isWithinY = position.y >= areaCenter.y - areaSize.y / 2 && position.y <= areaCenter.y + areaSize.y / 2;
-
-        Debug.Log($"Checking position: {position}, IsWithinX: {isWithinX}, IsWithinZ: {isWithinZ}, IsWithinY: {isWithinY}");
-
-        return isWithinX && isWithinZ; // Return true if within X and Z bounds
-                                       // If you want to include Y, return isWithinX && isWithinZ && isWithinY;
-    }
 
     private IEnumerator SpawnWave()
     {
@@ -143,68 +145,7 @@ public class SandBagManager : MonoBehaviour
             Debug.Log("Failed to spawn wave. Wave prefab is null.");
         }
     }
-    /*     private void DropSandbag(Vector3 playerPosition, string type)
-        {
-            // Set the desired rotation for the sandbag
-            Quaternion rotation = Quaternion.Euler(270, 0, 0); // Set the rotation to 270 degrees on the X-axis
 
-            // Get the number of sandbags available in the inventory
-            int totalSandbags = inventoryManager.GetSandbagCount(type);
-            Debug.Log($"Initial total sandbags: {totalSandbags}");
-
-            StartCoroutine(SpawnRainmakerWithDelay(playerPosition));
-            StartCoroutine(SpawnWave());
-
-            // If there are no sandbags, exit the method
-            if (totalSandbags <= 0)
-            {
-                Debug.Log("No sandbags available to drop.");
-                return;
-            }
-
-            // Define the effective width of the sandbag based on its scale
-            float radius = 1.45f; // Set the radius to 2f to place sandbags very close to the player
-            float stackingHeightIncrement = 0.6f; // Height increment for stacking sandbags
-            int maxSandbagsPerLayer = 12; // Set maximum number of sandbags per layer to 12 for a circular formation
-
-            int layers = Mathf.CeilToInt((float)totalSandbags / maxSandbagsPerLayer); // Calculate the number of layers
-            Debug.Log($"Calculated layers: {layers}");
-
-            for (int layer = 0; layer < layers; layer++)
-            {
-                // Calculate the current height for this layer
-                float currentHeight = stackingHeightIncrement * layer;
-
-                // Determine how many sandbags to place in this layer
-                int sandbagsInLayer = Mathf.Min(maxSandbagsPerLayer, totalSandbags);
-                Debug.Log($"Layer {layer}: Placing {sandbagsInLayer} sandbags.");
-
-                // Loop to create sandbags in a circular pattern for this layer
-                for (int i = 0; i < sandbagsInLayer; i++)
-                {
-                    // Calculate the angle for the current sandbag
-                    float angle = i * (360f / sandbagsInLayer);
-                    float radian = angle * Mathf.Deg2Rad;
-
-                    // Calculate the position for the current sandbag
-                    Vector3 offset = new Vector3(Mathf.Cos(radian) * radius, currentHeight, Mathf.Sin(radian) * radius);
-                    Vector3 sandbagPosition = playerPosition + offset;
-
-                    // Instantiate the sandbag at the calculated position with the specified rotation
-                    GameObject sandbag = Instantiate(sandbagPrefab, sandbagPosition, rotation);
-
-                    // Decrease the count in the inventory
-                    inventoryManager.AddSandbag(type, -1); // Decrease the count by 1
-
-                    // Decrease the total sandbags left
-                    totalSandbags--;
-                    Debug.Log($"Dropped sandbag. Remaining sandbags: {totalSandbags}");
-                }
-            }
-
-            // Log a message to the console indicating that sandbags have been placed
-            Debug.Log($"Placed sandbags to form a round fortress around the player at position: {playerPosition} with rotation: {rotation.eulerAngles}");
-        } */
     private void DropSandbag(Vector3 playerPosition, string type)
     {
         // Set the desired rotation for the sandbag
@@ -299,9 +240,80 @@ public class SandBagManager : MonoBehaviour
             Debug.Log("Player exited drop area. Can drop: " + canDrop);
         }
     }
+    //updated March 15
+    public void ResetState()
+    {
+        canDrop = false; // Reset the ability to drop sandbags
+        hasDroppedSandbags = false; // Allow dropping sandbags again
+        Debug.Log("SandBagManager state has been reset.");
+    }
 }
 
 
+
+
+/*     private void DropSandbag(Vector3 playerPosition, string type)
+    {
+        // Set the desired rotation for the sandbag
+        Quaternion rotation = Quaternion.Euler(270, 0, 0); // Set the rotation to 270 degrees on the X-axis
+
+        // Get the number of sandbags available in the inventory
+        int totalSandbags = inventoryManager.GetSandbagCount(type);
+        Debug.Log($"Initial total sandbags: {totalSandbags}");
+
+        StartCoroutine(SpawnRainmakerWithDelay(playerPosition));
+        StartCoroutine(SpawnWave());
+
+        // If there are no sandbags, exit the method
+        if (totalSandbags <= 0)
+        {
+            Debug.Log("No sandbags available to drop.");
+            return;
+        }
+
+        // Define the effective width of the sandbag based on its scale
+        float radius = 1.45f; // Set the radius to 2f to place sandbags very close to the player
+        float stackingHeightIncrement = 0.6f; // Height increment for stacking sandbags
+        int maxSandbagsPerLayer = 12; // Set maximum number of sandbags per layer to 12 for a circular formation
+
+        int layers = Mathf.CeilToInt((float)totalSandbags / maxSandbagsPerLayer); // Calculate the number of layers
+        Debug.Log($"Calculated layers: {layers}");
+
+        for (int layer = 0; layer < layers; layer++)
+        {
+            // Calculate the current height for this layer
+            float currentHeight = stackingHeightIncrement * layer;
+
+            // Determine how many sandbags to place in this layer
+            int sandbagsInLayer = Mathf.Min(maxSandbagsPerLayer, totalSandbags);
+            Debug.Log($"Layer {layer}: Placing {sandbagsInLayer} sandbags.");
+
+            // Loop to create sandbags in a circular pattern for this layer
+            for (int i = 0; i < sandbagsInLayer; i++)
+            {
+                // Calculate the angle for the current sandbag
+                float angle = i * (360f / sandbagsInLayer);
+                float radian = angle * Mathf.Deg2Rad;
+
+                // Calculate the position for the current sandbag
+                Vector3 offset = new Vector3(Mathf.Cos(radian) * radius, currentHeight, Mathf.Sin(radian) * radius);
+                Vector3 sandbagPosition = playerPosition + offset;
+
+                // Instantiate the sandbag at the calculated position with the specified rotation
+                GameObject sandbag = Instantiate(sandbagPrefab, sandbagPosition, rotation);
+
+                // Decrease the count in the inventory
+                inventoryManager.AddSandbag(type, -1); // Decrease the count by 1
+
+                // Decrease the total sandbags left
+                totalSandbags--;
+                Debug.Log($"Dropped sandbag. Remaining sandbags: {totalSandbags}");
+            }
+        }
+
+        // Log a message to the console indicating that sandbags have been placed
+        Debug.Log($"Placed sandbags to form a round fortress around the player at position: {playerPosition} with rotation: {rotation.eulerAngles}");
+    } */
 /*
 public class SandBagManager : MonoBehaviour
 {

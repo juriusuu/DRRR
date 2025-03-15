@@ -1,8 +1,57 @@
+
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro; // Include this for TextMeshPro
 
+public class LifeManager : MonoBehaviour
+{
+    public TMP_Text livesText; // Reference to the UI Text for lives
+    public SandBagManager sandBagManager; // Reference to the SandBagManager
 
+    void Start()
+    {
+        UpdateLivesUI(); // Update the UI to reflect the current lives
+    }
+
+    public void Die()
+    {
+        GameManager.Instance.Die(); // Call the Die method from GameManager
+        UpdateLivesUI(); // Update the UI when the player dies
+
+        if (GameManager.Instance.currentLives > 0)
+        {
+            Respawn(); // Respawn the player if lives are remaining
+        }
+        else
+        {
+            // Handle game over logic if no lives are left
+            Debug.Log("No lives left. Game Over!");
+            // You can load a game over scene or show a game over UI here
+        }
+    }
+
+    public void Respawn()
+    {
+        // Logic to respawn the player, e.g., resetting position
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Reload the current scene
+
+        // Reset the state of the SandBagManager
+        if (sandBagManager != null)
+        {
+            sandBagManager.ResetState(); // Reset the sandbag manager state
+        }
+    }
+
+    private void UpdateLivesUI()
+    {
+        if (livesText != null)
+        {
+            livesText.text = "Lives: " + GameManager.Instance.currentLives; // Update the text to show current lives
+        }
+    }
+}
+/* Without Game State
 public class LifeManager : MonoBehaviour
 {
     public TMP_Text livesText; // Reference to the UI Text for lives
@@ -36,7 +85,7 @@ public class LifeManager : MonoBehaviour
             livesText.text = "Lives: " + GameManager.Instance.currentLives; // Update the text to show current lives
         }
     }
-}
+} */
 /*
 public class LifeManager : MonoBehaviour
 {
